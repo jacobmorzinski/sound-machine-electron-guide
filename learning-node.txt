@@ -1,0 +1,88 @@
+Learning my way with node and npm
+
+"npm install" is a key part of working with someone else's Node app - it downloads the requirements for the app (such as electron).
+
+https://medium.com/developers-writing/building-a-desktop-application-with-electron-204203eeb658
+
+git clone https://github.com/bojzi/sound-machine-electron-guide.git
+[...or the fork https://github.com/jacobmorzinski/sound-machine-electron-guide.git ...]
+git checkout 00-blank-repository
+npm install
+
+git checkout 00-blank-repository
+[...create package.json...]
+npm install --save-dev electron-prebuilt
+[...ERROR!... try "electron" ? ...]
+npm install --save-dev electron
+[...again ERROR...]
+npm install --save-dev electron-prebuilt
+[...this time it worked.  !?  Download problems maybe?]
+
+while adding main.js and app/index.html, I found that the tutorial's main.js is for an older version of electron or node, and needs edits to work on modern electron.
+
+Instead of: 
+var app = require('app');
+var BrowserWindow = require('browser-window');
+...
+mainWindow.loadUrl('file://' + __dirname + '/app/index.html');
+
+use:
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+...
+mainWindow.loadURL('file://' + __dirname + '/app/index.html');
+
+THEN
+npm start
+
+And it works for the simple 00-blank-repository tag.
+Working on the 01-start-project tag, I find multple confusions.
+
+Had some trouble getting it to work.  It kept complaining about missing modules.
+Finally I did "npm install" (note: no --save-dev, did not specify "electron-prebuilt")
+
+Now, using electron and not electron-prebuilt, the code that I thought didn't work... does work.
+What?
+Maybe the issue is that the package.json pins me to an old version of electron-prebuild which accepts the old syntax.
+In fact yes, if I revert to the tutorial, things are fine, perhaps because the package.json pins a specific version of electron?
+
+git checkout 02-basic-sound-machine
+
+Works fine!
+
+git checkout 03-closable-sound-machine
+
+Works fine - shortcuts are sent via 'ipc'.
+
+git checkout 04-global-shortcuts-bound
+
+Works fine, except a brief confusion when I made a typo in a string that represented a channel name.
+
+git checkout 05-settings-window-working
+
+The command `npm install --save nconf` created a "dependencies" stanza in package.json including "nconf".
+
+Works fine.
+
+git checkout 06-shortcuts-configurable
+
+Works fine.
+
+git checkout 07-ready-for-packaging
+
+npm install --save-dev electron-packager
+npm run-script package
+
+Downloads electron-v0.30.2-linux-ia32.zip (?why? I'm on windows)
+Packaging app for platform linux ia32 using electron v0.30.2
+Downloads electron-v0.30.2-win32-ia32.zip (sigh)
+Packaging app for platform win32 ia32 using electron v0.30.2
+Downloads electron-v0.30.2-darwin-ia32.zip (yep)
+
+
+Oops it is installing things into "Documents\GitHub\sound-machine-electron-guide\~\Desktop\SoundMachine"
+Wrong tilde.  I could probably fix that, in the package.json definition of the "package" script.
+
+But yes, works.
+
